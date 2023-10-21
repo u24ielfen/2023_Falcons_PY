@@ -2,9 +2,8 @@ import wpilib
 from wpilib import SmartDashboard
 from wpilib import Field2d
 from commands2 import SubsystemBase
-from networktables import NetworkTable
 import navx
-from swerve_module import SwerveModule
+from swerve.swerve_module import SwerveModule
 import constants
 from wpimath.estimator import SwerveDrive4PoseEstimator
 import commands2
@@ -16,7 +15,6 @@ from wpimath.kinematics import (
     SwerveDrive4Kinematics,
     SwerveModuleState,
 )
-from swerve_module import SwerveModule
 
 
 class Swerve(SubsystemBase):

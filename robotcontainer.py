@@ -1,9 +1,7 @@
-import wpilib
 from wpilib import XboxController
 import commands2
 import commands2.button
 from constants import ButtonMappings
-from wpimath.geometry import Pose2d
 from subsystems.intake import Intake
 from subsystems.telescopic_arm import TelescopicArm
 from swerve.swerve import Swerve

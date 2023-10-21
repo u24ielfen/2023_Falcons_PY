@@ -7,7 +7,7 @@ from constants import ElevatorConstants
 class TelescopicArm(SubsystemBase):
     pivot_encoder_1 = DutyCycleEncoder(0)
     # pivot_encoder_2 = DutyCycleEncoder(6)
-    controller = XboxController(6)
+    controller = XboxController(3)
 
     pivot_motor_1 = CANSparkMax(
         ElevatorConstants.pivot_motor_id_1, CANSparkMaxLowLevel.MotorType.kBrushless

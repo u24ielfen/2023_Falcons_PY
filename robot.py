@@ -1,12 +1,12 @@
 import wpilib
 import wpilib.drive
-from robotcontainer import RobotContainer
+import robotcontainer
 import commands2
 
 
 class MyRobot(commands2.TimedCommandRobot):
     def robotInit(self):
-        self.container = RobotContainer()
+        self.container = robotcontainer.RobotContainer()
 
     # def disabledInit(self):
     # def disabledPeriodic(self) -> None:

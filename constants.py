@@ -89,6 +89,7 @@ class Mod3:
 class ElevatorConstants:
     pivot_motor_id_1 = 23
     pivot_motor_id_2 = 24
+    extend_motor_id = 21
 
 
 class ButtonMappings:
