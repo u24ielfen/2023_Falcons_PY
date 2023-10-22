@@ -2,6 +2,7 @@ import wpilib
 import wpilib.drive
 import robotcontainer
 import commands2
+from commands2 import CommandScheduler
 
 
 class MyRobot(commands2.TimedCommandRobot):
@@ -21,8 +22,8 @@ class MyRobot(commands2.TimedCommandRobot):
         if self.auto_command:
             self.auto_command.cancel()
 
-    def teleopPeriodic(self):
-        self.drive.arcadeDrive(self.stick.getY(), self.stick.getX())
+    def robotPeriodic(self) -> None:
+        CommandScheduler.getInstance().run()
 
 
 if __name__ == "__main__":
