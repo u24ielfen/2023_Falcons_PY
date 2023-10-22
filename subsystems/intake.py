@@ -19,6 +19,7 @@ class Intake(SubsystemBase):
     limit_switch_2 = DigitalInput(5)
 
     def __init__(self) -> None:
+        super().__init__()
         self.config_spin_motor()
         self.config_chin_motor
 

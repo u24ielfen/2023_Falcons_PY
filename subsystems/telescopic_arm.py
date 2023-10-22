@@ -22,6 +22,7 @@ class TelescopicArm(SubsystemBase):
     extend_encoder = extend_motor.getEncoder()
 
     def __init__(self) -> None:
+        super().__init__()
         self.config_extend_motor()
         self.config_pivot_motors()
         SmartDashboard.putBoolean("No Limit", False)

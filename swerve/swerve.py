@@ -22,6 +22,7 @@ class Swerve(SubsystemBase):
     field = Field2d()
 
     def __init__(self, robot):
+        super().__init__()
         self.swerve_mods = [
             [SwerveModule(0, constants.Mod0)],
             [SwerveModule(1, constants.Mod1)],
