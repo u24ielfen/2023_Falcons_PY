@@ -4,16 +4,18 @@ from wpimath.geometry import Rotation2d
 from wpimath.kinematics import SwerveModulePosition, SwerveModuleState
 from robot import MyRobot
 import ctre
-from ctre import (
-    TalonFX,
+from ctre.sensors import (
     CANCoder,
     CANCoderConfiguration,
+    SensorInitializationStrategy,
+    SensorTimeBase,
+)
+from ctre import (
+    TalonFX,
     ControlMode,
     SupplyCurrentLimitConfiguration,
     TalonFXConfiguration,
     DemandType,
-    SensorInitializationStrategy,
-    SensorTimeBase,
     NeutralMode,
 )
 import typing
@@ -29,7 +31,7 @@ class SwerveModule:
     angle_offset: float
     angle_motor: ctre.TalonFX
     drive_motor: ctre.TalonFX
-    angle_encoder: ctre.CANCoder
+    angle_encoder: CANCoder
     last_angle: float
 
     def __init__(
@@ -39,8 +41,10 @@ class SwerveModule:
             SwerveConstants.drivekS, SwerveConstants.drivekV, SwerveConstants.drivekA
         )
         self.module_number = module_number
-        self.angle_offset = moduleConstants.angle_offset
-        self.angle_encoder = ctre.CANCoder(moduleConstants.cancoderID, "carnivore")
+        self.angle_motor = TalonFX(moduleConstants.angleMotorID)
+        self.drive_motor = TalonFX(moduleConstants.driveMotorID)
+        self.angle_encoder = CANCoder(moduleConstants.canCoderId, "carnivore")
+        self.angle_offset = moduleConstants.angleOffset
         self.config_angle_encoder()
 
         self.last_angle = self.get_state().angle.degrees()
@@ -50,10 +54,10 @@ class SwerveModule:
     ) -> None:
         self.invert_motors()
         desired_state = ctre_module_states.optimize(
-            desired_state, self.get_can_coder_rotation2D
+            desired_state, self.get_can_coder_rotation2D()
         )
         self.set_speed(desired_state, is_open_loop)
-        self.set_angle(desired_state, is_open_loop)
+        self.set_angle(desired_state)
 
     def set_speed(self, desired_state: SwerveModuleState, is_open_loop: bool) -> None:
         if is_open_loop:
@@ -118,7 +122,7 @@ class SwerveModule:
         swerve_drive_motor_configs.supplyCurrLimit = SupplyCurrentLimitConfiguration(
             True, 25, 40, 0.1
         )
-        self.drive_motorEncoder.configAllSettings(swerve_drive_motor_configs)
+        self.drive_motor.configAllSettings(swerve_drive_motor_configs)
 
     # Resets
     def reset_to_absolute(self) -> None:
@@ -142,23 +146,24 @@ class SwerveModule:
             SwerveConstants.swerve_drive_gear_ratio,
         )
 
-        angle = Rotation2d.fromDegrees(
-            conversions.falcon_to_degress(
-                self.angle_motor.getSelectedSensorPosition(),
-                SwerveConstants.angle_gear_ratio,
-            )
-        )
-
-        return SwerveModuleState(velocity, angle)
+        return SwerveModuleState(velocity, self.get_angle())
 
     def get_position(self) -> SwerveModulePosition:
         return SwerveModulePosition(
             conversions.falcon_to_meters(
-                self.drive_motor.getSelectedSensorPosition,
+                self.drive_motor.getSelectedSensorPosition(),
                 SwerveConstants.swerve_wheel_circumference,
                 SwerveConstants.angle_gear_ratio,
             ),
-            self.get_state().angle(),
+            self.get_angle(),
+        )
+
+    def get_angle(self) -> Rotation2d:
+        return Rotation2d.fromDegrees(
+            conversions.falcon_to_degress(
+                self.angle_motor.getSelectedSensorPosition(),
+                SwerveConstants.angle_gear_ratio,
+            )
         )
 
     # Mode

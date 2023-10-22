@@ -14,6 +14,7 @@ from wpimath.kinematics import (
     ChassisSpeeds,
     SwerveDrive4Kinematics,
     SwerveModuleState,
+    SwerveDrive4Odometry,
 )
 
 
@@ -21,23 +22,23 @@ class Swerve(SubsystemBase):
     gyro = navx.AHRS.create_spi()
     field = Field2d()
 
-    def __init__(self, robot):
+    def __init__(self):
         super().__init__()
         self.swerve_mods = [
-            [SwerveModule(0, constants.Mod0)],
-            [SwerveModule(1, constants.Mod1)],
-            [SwerveModule(2, constants.Mod2)],
-            [SwerveModule(0, constants.Mod3)],
+            SwerveModule(0, constants.Mod0),
+            SwerveModule(1, constants.Mod1),
+            SwerveModule(2, constants.Mod2),
+            SwerveModule(3, constants.Mod3),
         ]
 
-        self.odometry = SwerveDrive4PoseEstimator(
+        self.odometry = SwerveDrive4Odometry(
             SwerveConstants.kinematics,
             self.get_gyro_angle(),
-            self.get_module_positions(),
+            list(self.get_module_positions()),
         )
 
     def periodic(self) -> None:
-        self.odometry.update(self.get_gyro_angle(), self.get_module_positions())
+        self.odometry.update(self.get_gyro_angle(), *self.get_module_positions())
         self.field.setRobotPose(self.get_pose())
         SmartDashboard.putNumber("Gyro Disp. X", self.gyro.getDisplacementX())
         SmartDashboard.putNumber("Gyro Disp. Y", self.gyro.getDisplacementY())
@@ -54,12 +55,14 @@ class Swerve(SubsystemBase):
         is_open_loop: bool,
     ):
         if fieldRelative:
-            swerve_module_states = ChassisSpeeds.fromFieldRelativeSpeeds(
-                translation.Y(), translation.X(), rotation, self.get_gyro_angle()
+            swerve_module_states = SwerveConstants.kinematics.toSwerveModuleStates(
+                ChassisSpeeds.fromFieldRelativeSpeeds(
+                    translation.Y(), translation.X(), rotation, self.get_gyro_angle()
+                )
             )
         else:
-            swerve_module_states = ChassisSpeeds(
-                translation.getY(), translation.getX(), rotation
+            swerve_module_states = SwerveConstants.kinematics.toSwerveModuleStates(
+                ChassisSpeeds(translation.Y(), translation.X(), rotation)
             )
         SwerveDrive4Kinematics.desaturateWheelSpeeds(
             swerve_module_states, SwerveConstants.swerve_max_speed
@@ -82,13 +85,13 @@ class Swerve(SubsystemBase):
 
     # Geters
     def get_gyro_angle(self) -> Rotation2d:
-        return Rotation2d.fromDegrees(360 - self.gyro.getYaw)
+        return Rotation2d.fromDegrees(360 - self.gyro.getYaw())
 
-    def get_module_positions(self) -> tuple:
-        return tuple([module.getPosition() for module in self.swerve_mods])
+    def get_module_positions(self):
+        return tuple([module.get_position() for module in self.swerve_mods])
 
     def get_pose(self):
-        return self.odometry.getEstimatedPosition()
+        return self.odometry.getPose()
 
     # Resets
     def reset_gyro(self) -> None:

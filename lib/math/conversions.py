@@ -30,5 +30,5 @@ def mps_to_falcon(velocity: float, circumference: float, gearRatio: float) -> fl
 def falcon_to_meters(
     falconTicks: float, circumference: float, gearRatio: float
 ) -> float:
-    wheelRevs = (falconTicks / 2048.0) / gearRatio
+    wheelRevs = falconTicks / (gearRatio * 2048)
     return wheelRevs * circumference

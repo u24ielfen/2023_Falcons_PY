@@ -24,6 +24,7 @@ class RobotContainer:
                 self.driver_controller.getLeftBumper(),
             )
         )
+        self.auto_chooser = AutoChooser(self.telescopic_arm, self.intake, self.swerve)
         self.configure_button_bindings()
 
     def configure_button_bindings(self) -> None:
@@ -33,5 +34,5 @@ class RobotContainer:
             )
         )
 
-    def get_autonomous_command() -> commands2.Command:
-        AutoChooser.get_chooser_option()
+    def get_autonomous_command(self) -> commands2.Command:
+        self.auto_chooser.get_chooser_option()

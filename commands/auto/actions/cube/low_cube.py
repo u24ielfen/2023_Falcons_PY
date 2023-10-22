@@ -1,13 +1,13 @@
 from subsystems.telescopic_arm import TelescopicArm
 from subsystems.intake import Intake
 from swerve.swerve import Swerve
-from elevator.chin_command import ChinCommand
-from elevator.extend_command import ExtendCommand
-from elevator.intake_command import IntakeCommand
-from elevator.pivot_command import PivotCommand
+from commands.auto.elevator.chin_command import ChinCommand
+from commands.auto.elevator.extend_command import ExtendCommand
+from commands.auto.elevator.intake_command import IntakeCommand
+from commands.auto.elevator.pivot_command import PivotCommand
 from commands2 import CommandBase
 import commands2
-from actions.drive_x_time import DriveXTime
+from commands.auto.actions.drive_x_time import DriveXTime
 
 
 class LowCube(CommandBase):

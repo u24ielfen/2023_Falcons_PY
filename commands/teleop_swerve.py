@@ -26,4 +26,5 @@ class TeleopSwerve(CommandBase):
         # TODO: Make controls better: https://github.com/CtrlZ-FRC4096/Robot-2023-Public/blob/d27d9ec620a521f5b9575ca9b4bec8e30b3b229c/robot/oi.py#L77
 
         self.translation = Translation2d(self.xAxis, self.yAxis)
-        self.swerve.drive(self.translation, self.rotation, self.field_relative)
+        self.rotation = self.rAxis
+        self.swerve.drive(self.translation, self.rotation, self.field_relative, True)

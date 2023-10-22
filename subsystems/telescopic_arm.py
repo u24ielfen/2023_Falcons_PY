@@ -72,8 +72,8 @@ class TelescopicArm(SubsystemBase):
     def pivot_arm_speed(self, speed: float):
         if abs(speed) <= 0.1:
             speed = 0
-        self.pivot_motor_1(speed)
-        self.pivot_motor_2(speed)
+        self.pivot_motor_1.set(speed)
+        self.pivot_motor_2.set(speed)
 
     # Move To X
     def extend_to_tick(self, ticks: float, max_speed: float):
